@@ -74,13 +74,13 @@ begin
     begin
         if (vc >= (vbp + 100) && vc < (vfp - 100))
         begin
-            if (vc >= (vbp + 411) && vc < (vbp + 413) && hc >= (hbp + (106 + tick)) && hc < (hbp + (108 + tick)))
+            if (vc >= (vbp + 411) && vc < (vbp + 413) && hc >= (hbp + (103 + tick)) && hc < (hbp + (105 + tick)))
             begin
                 red = 4'b1111;
                 green = 4'b0000;
                 blue = 4'b0000;
             end
-            else if (hc >= (hbp + 100) && hc < (hbp + 105)) //y-axis
+            else if (hc >= (hbp + 100) && hc < (hbp + 103)) //y-axis
             begin
                 red = 4'b1111;
                 green = 4'b1111;
@@ -93,7 +93,7 @@ begin
                 blue = 0;
             end
         end
-        else if (vc >= (vfp - 100) && vc < (vfp - 95) && hc >= (hbp + 100) && hc < (hbp + 500)) //x-axis
+        else if (vc >= (vfp - 100) && vc < (vfp - 98) && hc >= (hbp + 100) && hc < (hbp + 500)) //x-axis
         begin
             red = 4'b1111;
             green = 4'b1111;
