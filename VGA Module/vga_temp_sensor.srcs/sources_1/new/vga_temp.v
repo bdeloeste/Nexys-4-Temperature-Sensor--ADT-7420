@@ -21,11 +21,23 @@ parameter hfp = 784;
 parameter vbp = 31;
 parameter vfp = 511;
 
+reg [28:0] counter;
+reg [18:0] tick;
 reg [9:0] hc;
 reg [9:0] vc;
 reg [1:0] pxclk;
 
-always @ (posedge clk) pxclk <= pxclk + 1;
+always @ (posedge clk)
+begin
+    pxclk <= pxclk + 1;
+    if (counter == 20'hF4240)
+    begin
+        tick = tick + 1;
+        counter = 0;
+    end
+    else
+        counter <= counter + 1;
+end
 
 wire pclk;
 
@@ -62,7 +74,7 @@ begin
     begin
         if (vc >= (vbp + 100) && vc < (vfp - 100))
         begin
-            if (vc >= (vbp + 411) && vc < (vbp + 413) && hc >= (hbp + 106) && hc < (hbp + 108))
+            if (vc >= (vbp + 411) && vc < (vbp + 413) && hc >= (hbp + (106 + tick)) && hc < (hbp + (108 + tick)))
             begin
                 red = 4'b1111;
                 green = 4'b0000;
