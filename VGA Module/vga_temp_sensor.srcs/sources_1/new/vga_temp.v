@@ -9,7 +9,7 @@ module vh_sync (
     output reg [3:0] red,
     output reg [3:0] green,
     output reg [3:0] blue,
-    output reg [11:0] led,
+    output reg [11:0] led
 	);
 	
 parameter hpixels = 800;
@@ -23,18 +23,9 @@ parameter vfp = 511;
 
 reg [9:0] hc;
 reg [9:0] vc;
-
-reg [28:0] count;
-reg [11:0] counter;
-wire tick;
-
 reg [1:0] pxclk;
 
 always @ (posedge clk) pxclk <= pxclk + 1;
-
-reg [3:0] redcount;
-reg [3:0] greencount;
-reg [3:0] bluecount;
 
 wire pclk;
 
@@ -71,7 +62,7 @@ begin
     begin
         if (vc >= (vbp + 100) && vc < (vfp - 100))
         begin
-            if (vc >= (vbp + 411 - (redcount * 15)) && hc >= (hbp + 120) && hc < (hbp + 140))
+            if (vc >= (vbp + 411) && vc < (vbp + 413) && hc >= (hbp + 106) && hc < (hbp + 108))
             begin
                 red = 4'b1111;
                 green = 4'b0000;
@@ -103,7 +94,6 @@ begin
             blue = 0;
         end
     end
-end
     else
     begin
         red = 0;
