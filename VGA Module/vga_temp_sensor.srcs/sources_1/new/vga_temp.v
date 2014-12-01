@@ -35,6 +35,8 @@ begin
         tick = tick + 1;
         counter = 0;
     end
+    else if (tick == 400)
+        tick <= 0;
     else
         counter <= counter + 1;
 end
@@ -74,13 +76,13 @@ begin
     begin
         if (vc >= (vbp + 100) && vc < (vfp - 100))
         begin
-            if (vc >= (vbp + 411) && vc < (vbp + 413) && hc >= (hbp + (103 + tick)) && hc < (hbp + (105 + tick)))
+            if (vc >= (vbp + 210) && vc < (vbp + 212) && hc >= (hbp + (102)) && hc < (hbp + (104 + tick)))
             begin
                 red = 4'b1111;
                 green = 4'b0000;
                 blue = 4'b0000;
             end
-            else if (hc >= (hbp + 100) && hc < (hbp + 103)) //y-axis
+            else if (hc >= (hbp + 100) && hc < (hbp + 102)) //y-axis
             begin
                 red = 4'b1111;
                 green = 4'b1111;
