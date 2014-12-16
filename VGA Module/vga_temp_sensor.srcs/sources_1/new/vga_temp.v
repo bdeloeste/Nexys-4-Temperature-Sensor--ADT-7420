@@ -35,23 +35,24 @@ reg [9:0] hc;
 reg [9:0] vc;
 reg [1:0] pxclk;
 
+wire inH = (hc < 640);
+wire inV = (vc < 480);
+wire inDisplay = inH && inV;
+
 always @ (posedge clk)
 begin
     pxclk <= pxclk + 1;
     if (counter == 2000000)
-    begin
-        tick = tick + 1;
-        counter = 0;
-    end
-    else if (tick == 200)
-        tick <= 0;
+        counter <= 0;
     else
         counter <= counter + 1;
 end
 
 wire pclk;
+wire click;
 
 assign pclk = pxclk[1]; // 25MHz Pixel Clock
+assign click = (counter == 2000000) ? 1 : 0;
 
 /*
  * Enable the horizontal and vertical counters to count when they are in the
@@ -88,52 +89,50 @@ reg [11:0] g = 12'h0F0;
 reg [11:0] b = 12'hF00;
 reg [11:0] w = 12'hFFF;
 
-reg [7:0] data;
+wire [7:0] data;
+assign data = {sixth, fifth};
 
-always @ (*) data = {sixth, fifth};
+always @ (posedge click)
+begin
+    if (tick == 200)
+        tick <= 0;
+    else
+        tick <= tick + 1;
+end
 
 /*
 * This always block is used to display all characters (A-Z, 0-9)
 */
 always @ (*)
-begin   
-    if (vc >= vbp & vc < vfp)
+begin
+    if ((vc >= vbp & vc < vfp & hc >= hbp & hc < hfp))
     begin
-        if(hc >= hbp & hc < hfp)
-        begin
-            // X, Y Axis
-            draw(100, 100, 102, 300, w);
-            draw(100, 300, 300, 302, w);
-            // X-labels
-            char(35, 90, 310);
-            // TIME 
-            char(19, 150, 310);
-            char(8, 160, 310);
-            char(12, 168, 310);
-            char(4, 178, 310);
-            // TEMPERATURE
-            char(19, 108, 102);
-            char(4, 120, 102);
-            char(12, 130, 102);
-            char(15, 140, 102);
-            char(4, 150, 102);
-            char(17, 160, 102);
-            char(0, 170, 102);
-            char(19, 180, 102);
-            char(20, 190, 102);
-            char(17, 200, 102);
-            char(4, 210, 102);
-            // DATA
-            draw(103 + tick, 200 + data, 105 + tick, 202 + data, r);
-        end
-        else
-        begin
-            red = 0;
-            green = 0;
-            blue = 0;
-        end
+        // X, Y Axis
+        draw(100, 100, 102, 300, w);
+        draw(100, 100, 300, 102, w);
+        // X-labels
+        char(35, 90, 90);
+        // TIME 
+        char(19, 150, 80);
+        char(8, 160, 80);
+        char(12, 168, 80);
+        char(4, 178, 80);
+        // TEMPERATURE
+        char(19, 108, 302);
+        char(4, 120, 302);
+        char(12, 130, 302);
+        char(15, 140, 302);
+        char(4, 150, 302);
+        char(17, 160, 302);
+        char(0, 170, 302);
+        char(19, 180, 302);
+        char(20, 190, 302);
+        char(17, 200, 302);
+        char(4, 210, 302);
+        // DATA
+        draw(103 + tick, 200 + data, 105 + tick, 202 + data, r);
     end
-    else
+    if (!inDisplay)
     begin
         red = 0;
         green = 0;
@@ -157,6 +156,12 @@ begin
         red = color[3:0];
         green = color[7:4];
         blue = color[11:8];
+    end
+    if (!inDisplay)
+    begin
+        red = 0;
+        green = 0;
+        blue = 0;
     end
 end
 endfunction
